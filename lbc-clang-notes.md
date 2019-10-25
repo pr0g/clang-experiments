@@ -14,8 +14,9 @@ cmake --build build/ --target install --config Release
 cmake --build build/ --target install --config Debug
 ```
 
+- @note: With this setup the debug and release libs will overwrite each other (whichever you built last will win)
 - Must copy files from build `bin/` folder to `C:\Program Files\LLVM\bin`
-  - e.g. `<root>/llvm/llvm/build/Release/bin/`
+  - e.g. from cloned root - `<root>/llvm/llvm/build/Release/bin/`
 
 [llvm-cmake](https://llvm.org/docs/CMake.html) - installation instructions for using llvm with cmake (+ installing)
 

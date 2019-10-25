@@ -47,5 +47,10 @@
 
 - AST Dump - dump out whole AST
 
+## Demo/Example
+
+- Create an index (CIIndex) - a structure that will manage all your translation units for you
+
+
 
 ## Progress - https://youtu.be/E6i8jmiy8MY?t=1562

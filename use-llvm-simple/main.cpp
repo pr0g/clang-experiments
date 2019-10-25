@@ -18,6 +18,7 @@ int main(int argc, char** argv)
     CXIndex index = clang_createIndex(
         /*excludeDeclarationsFromPCH=*/ true,
         /*displayDiagnostics=*/true);
+    (void)index;
 
     std::cout << "hello, world!\n";
     return 0;
