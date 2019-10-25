@@ -1,5 +1,7 @@
 # clang ast notes
 
+[“clang-useful: Building useful tools with LLVM and clang for fun and profit"](https://youtu.be/E6i8jmiy8MY)
+
 ## Types
 
 - Stmt (statement)
@@ -49,8 +51,49 @@
 
 ## Demo/Example
 
-- Create an index (CIIndex) - a structure that will manage all your translation units for you
+- Create an index (`CIIndex`) - a structure that will manage all your translation units for you
+- `clang_parseTranslationUnit` - important function, gives you back the AST (does all the parsing)
+- `CXTranslationUnit` - cursor as well
+- `clang_visitChildren` - does the actual visitation (walks the AST)
+  - takes `data` (`void*`) data includes filter and the lines (includes some predicates)
+  - pattern (regular expression)
+  - `clang_getCursorKind` - kind of cursor (e.g. filter for functions)
+    - every cursor has a _kind_ - it is the c abstraction for _decl_, _statement_, _expression_ etc...
+  - `clang_Location_isInSystemHeader` - to skip all system headers
+  - `clang_getCursorSpelling` - name of the function/class
+  - `clang_getSpellingLocation` - find where in the file is this cursor, returns line number, column number and file
+  - `CXChildVisit_Recurse` - continue recursing AST
+  - `CXChildVisit_Continue` - continue to the next sibling
+  - `CXChildVisit_Break` - stop at this point
+- libtooling
+  - clang tool is made up of three things, an __Action__, a __Consumer__ and a __Callback__
+  - an __Action__ allows you to access the AST at different steps during the compilation
+    - e.g. `BeginSourceFileAction` - access file name among other things
+    - also `EndSourceFileAction` and `ExecuteAction` (in between)
+      - can print something at the end
+    - __Consumer__ - little boilerplate, creates a matcher - good at finding a specific node in the AST
+      - has macros where you can define what you're looking for (e.g. functions)
+      - `HandleTranslationUnit` - run our handler on the AST
+    - At this point the AST is already parsed
+    - Handler - called for every node that matches
+    - mccabe index example
+    - `buildCFG` - builds a graph consisting of basic blocks
+      - computer number of nodes and edges
+    - clang Diagnostics (can use for your own tool) - [Emitting Diagnostics in Clang](http://www.goldsborough.me/c++/clang/llvm/tools/2017/02/24/00-00-06-emitting_diagnostics_and_fixithints_in_clang_tools/)
+      - create a diagnostics engine in clang
+  - include sorting (using the preprocessor)
+    - `BeginInvokeAction` - called before any source file is touched
+    - can override `InclusionDirective` in class deriving from `clang::PPCallbacks`
+    - `Rewriter.ReplaceText` - begin/end
+    - `clang::FixItHint` - describe some way of fixing a problem
 
+## Closing
 
-
-## Progress - https://youtu.be/E6i8jmiy8MY?t=1562
+- `clangd` - language server (clang as a service)
+  - code completion, linting etc...
+- references
+  - eli.thegreenplace.net
+  - clang.llvm.org/docs/InternalsManual.html
+  - llvm.org/docs/ProgrammersManual.html
+  - goldsborough.me & github.com/goldsborough
+  - github.com/peter-can-talk/cppnow-2017
