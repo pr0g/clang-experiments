@@ -97,3 +97,12 @@
   - llvm.org/docs/ProgrammersManual.html
   - goldsborough.me & github.com/goldsborough
   - github.com/peter-can-talk/cppnow-2017
+
+## Clang Talk
+
+[Fred Tingaud “How to Refactor Millions of Line of Code Without Alienating your Colleagues”](https://youtu.be/JPnN2c2odNY)
+
+- clang tidy search foe specific clang-tidy nodes
+- Clang Tidy Matcher
+  - registerMatchers(MatchFiner* finder) { finder->addMatcher(MY_MATCHER...); }
+  - virtual void check(const MatchFinder::MatchResult& result)

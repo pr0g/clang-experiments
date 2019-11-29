@@ -7,7 +7,6 @@
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/CompilationDatabase.h>
 
-
 int main(int argc, char** argv)
 {
     llvm::cl::OptionCategory cppOptionCategories{"cpp-options"};
