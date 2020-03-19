@@ -2,29 +2,25 @@
 
 ## Building LLVM/Clang
 
-Commands for building llvm/clang on windows
+Commands for building llvm/clang on windows - https://github.com/pr0g/clang-tidy-and-clang-format
+
+Note: Include `clang` and `lld` in `LLVM_ENABLE_PROJECTS`
 
 ```bash
-mkdir llvm && cd llvm
-git clone https://github.com/llvm/llvm-project.git .
-cmake -S . -B build\ -DLLVM_ENABLE_PROJECTS=clang;lld -G "Visual Studio 16 2019" -A x64 -Thost=x64 ..\llvm
-
 cmake --build build/ --target install --config Release
 # or
 cmake --build build/ --target install --config Debug
 ```
 
-- @note: With this setup the debug and release libs will overwrite each other (whichever you built last will win)
-- Must copy files from build `bin/` folder to `C:\Program Files\LLVM\bin`
-  - e.g. from cloned root - `<root>/llvm/llvm/build/Release/bin/`
+- @note `install` command will copy files to `C:\Program Files (x86)\LLVM\bin`
+  - May need to move files to `C:\Program Files\LLVM\bin` if building `x64`
+- @note: With this setup the Debug and Release libs will overwrite each other (whichever you built last will win)
 
 [llvm-cmake](https://llvm.org/docs/CMake.html) - installation instructions for using llvm with cmake (+ installing)
 
 ## Dummy project
 
 Test project to compile with clang (on Windows)
-
-Must install Visual Studio extension `llvm2019` for `-T "llvm"` option to work
 
 ```cmake
 # CMakeLists.txt
@@ -46,13 +42,17 @@ int main(int argc, char** argv)
 
 ```bash
 # build command (from src/ root dir, containing CMakeLists.txt and main.cpp)
-cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64 -T "llvm"
+cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64 -T clangcl^
+    -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe"
 ```
 
 ```bash
 # build command (from src/ root dir, containing CMakeLists.txt and main.cpp)
-cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64 -T "llvm"^
-    -DCMAKE_PREFIX_PATH="C:\Program Files (x86)\LLVM\lib\cmake\clang;C:\Program Files (x86)\LLVM\lib\cmake\llvm"
+cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64-T clangcl^
+    -DCMAKE_PREFIX_PATH="C:/Program Files/LLVM/lib/cmake/clang;C:/Program Files/LLVM/lib/cmake/llvm"^
+    -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe"
 ```
 
 ## Use-LLVM-Simple
+
+@note Must install `C++ Clang-cl for v142 build tools` in Visual Studio installer
