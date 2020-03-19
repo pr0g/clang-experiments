@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(use-llvm-simple LANGUAGES CXX)
+project(use-override LANGUAGES CXX)
 
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
