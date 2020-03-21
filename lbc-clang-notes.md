@@ -18,6 +18,11 @@ cmake --build build/ --target install --config Debug
 
 [llvm-cmake](https://llvm.org/docs/CMake.html) - installation instructions for using llvm with cmake (+ installing)
 
+### Ninja
+
+Ninja must be added to your path (e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`)
+To use Ninja generator from regular command prompt with MSVC, must run `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"`
+
 ## Dummy project
 
 Test project to compile with clang (on Windows)
@@ -56,3 +61,12 @@ cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64-T clangcl^
 ## Use-LLVM-Simple
 
 @note Must install `C++ Clang-cl for v142 build tools` in Visual Studio installer
+
+## include-what-you-use
+
+```bash
+python C:\Users\hultonha\Documents\iwyu\iwyu_tool.py -p . > iwyu.out
+
+python C:\Users\hultonha\Documents\iwyu\fix_includes.py < iwyu.out --blank_lines --nocomments --reorder
+# optional --dry_run
+```
