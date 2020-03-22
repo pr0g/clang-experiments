@@ -57,6 +57,8 @@ It is possible to use the Ninja build system on Windows (even when using the MSV
 
 ## Projects
 
+### Build with Clang
+
 There are several options available when building your project.
 
 - If you would like to use the full Visual Studio tool-chain then you can download _C++ Clang Compiler for Windows (9.0.0)_ from the Visual Studio Installer _(Modify - Individual Components - (search 'llvm'))_.
@@ -91,6 +93,12 @@ There are several options available when building your project.
     ```bash
     cmake --build build -v
     ```
+
+### Use Clang Libraries (LibTooling)
+
+In addition to being able to use Clang to compile, with Clang/LLVM installed, it is possible to build projects making using of `libTooling`. It is possible to use the `libTooling` libraries with MSVC or Clang.
+
+Please refer to [use-llvm-simple/CMakeLists.txt](use-llvm-simple/CMakeLists.txt) for an example of how to setup a project that uses Clang and LLVM as dependencies and the [use-llvm-simple/configure-debug.bat](use-llvm-simple/configure-debug.bat) for how to configure the project.
 
 ## include-what-you-use
 
