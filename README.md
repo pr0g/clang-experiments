@@ -1,72 +1,112 @@
-# Build notes
+# Clang on Windows
 
 ## Building LLVM/Clang
 
-Commands for building llvm/clang on windows - https://github.com/pr0g/clang-tidy-and-clang-format
+Commands for building LLVM/Clang on Windows.
 
-Note: Include `clang` and `lld` in `LLVM_ENABLE_PROJECTS`
+### Prerequisites
 
-```bash
-cmake --build build/ --target install --config Release
-# or
-cmake --build build/ --target install --config Debug
-```
+- [Visual Studio 2019](https://visualstudio.microsoft.com/downloads/)
+- [CMake](https://cmake.org/download/)
+- [Git](https://git-scm.com/downloads)
 
-- @note `install` command will copy files to `C:\Program Files (x86)\LLVM\bin`
-  - May need to move files to `C:\Program Files\LLVM\bin` if building `x64`
-- @note: With this setup the Debug and Release libs will overwrite each other (whichever you built last will win)
+### Instructions
 
-[llvm-cmake](https://llvm.org/docs/CMake.html) - installation instructions for using llvm with cmake (+ installing)
+1. Create a directory to sync the LLVM Project repo to.
 
-### Ninja
+    ```bash
+    cd ${SRC_ROOT} # root folder for LLVM repo
+    git clone --depth 1 https://github.com/llvm/llvm-project .
+    ```
 
-Ninja must be added to your path (e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`)
-To use Ninja generator from regular command prompt with MSVC, must run `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"`
+0. From the root folder, configure the build for LLVM.
 
-## Dummy project
+    ```bash
+    cmake -S llvm/ -B build/ -G "Visual Studio 16 2019"^
+        -DCMAKE_GENERATOR_PLATFORM=x64^
+        -Thost=x64^
+        -DLLVM_INCLUDE_TESTS=OFF^
+        -DLLVM_BUILD_TOOLS=ON^
+        -DLLVM_INCLUDE_UTILS=OFF^
+        -DLLVM_TARGETS_TO_BUILD=X86^
+        -DCLANG_ENABLE_STATIC_ANALYZER=OFF^
+        -DCLANG_ENABLE_ARCMT=OFF^
+        -DLLVM_ENABLE_PROJECTS="clang;clang-tools-extra;lld"
+    ```
+0. Build LLVM/Clang.
 
-Test project to compile with clang (on Windows)
+    ```bash
+    cmake --build build/ --target install --config Release
+    ```
 
-```cmake
-# CMakeLists.txt
-cmake_minimum_required(VERSION 3.13)
-project(test LANGUAGES CXX)
-add_executable(${PROJECT_NAME} main.cpp)
-```
+    - The `--target install` command will copy built files (.lib, .exe etc.) to `C:\Program Files (x86)\LLVM` by default. This location can be customized by setting the `-DCMAKE_INSTALL_PREFIX` variable when running the configure step.
+        - If a custom install location isn't set and a Debug version of the library is built/installed, the files will overwrite the previous Release files (whichever you built last will win). Please see the example files in [examples/llvm-build-scripts](examples/llvm-build-scripts) for an example of how to install both Debug and Release versions using `-DCMAKE_INSTALL_PREFIX`.
 
-```c++
-// main.cpp
-#include <iostream>
+0. More information can be found [here](https://llvm.org/docs/CMake.html) on using LLVM and CMake.
 
-int main(int argc, char** argv)
-{
-    std::cout << "hello, world!\n";
-    return 0;
-}
-```
+## Ninja
 
-```bash
-# build command (from src/ root dir, containing CMakeLists.txt and main.cpp)
-cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64 -T clangcl^
-    -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe"
-```
+It is possible to use the Ninja build system on Windows (even when using the MSVC (`cl.exe`) compiler) as opposed to `MSBuild`. This is useful if you want to generate a `compile_commands.json` file for your project.
 
-```bash
-# build command (from src/ root dir, containing CMakeLists.txt and main.cpp)
-cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64-T clangcl^
-    -DCMAKE_PREFIX_PATH="C:/Program Files/LLVM/lib/cmake/clang;C:/Program Files/LLVM/lib/cmake/llvm"^
-    -DCMAKE_CXX_COMPILER="C:/Program Files/LLVM/bin/clang++.exe"
-```
+### Prerequisites
 
-## Use-LLVM-Simple
+- If you wish to use your normal terminal (e.g. cmd.exe or cmder) Ninja must be added to your path (e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`).
+    - To use the Ninja generator from your normal terminal with MSVC you must run `vcvars64.bat`, located here: `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"` (the exact location may differ depending on which version of Visual Studio you have installed (year/edition etc.)).
+        - This is so CMake knows the location of the compiler (`cl.exe`).
+- It is also possible to simply launch the Developer Command Prompt for Visual Studio to have these options added automatically to the environment.
 
-@note Must install `C++ Clang-cl for v142 build tools` in Visual Studio installer
+## Projects
+
+There are several options available when building your project.
+
+- If you would like to use the full Visual Studio tool-chain then you can download _C++ Clang Compiler for Windows (9.0.0)_ from the Visual Studio Installer _(Modify - Individual Components - (search 'llvm'))_.
+- To build using MSBuild and a custom Clang build, download _C++ Clang-cl for v142 build tools (x64/x86)_ _(Modify - Individual Components - (search 'llvm'))_.
+
+    ```bash
+    # configure with MSBuild generator and Clang compiler
+    cmake -S . -B build/ -G "Visual Studio 16 2019" -A x64 -T clangcl^
+        -DCMAKE_CXX_COMPILER="C:/Program Files (x86)/LLVM/bin/clang++.exe" # optional - custom Clang location
+
+    # build with MSBuild
+    cmake --build build --config Release
+    ```
+
+    - For the above to work, you must add the location where you installed `clang` to your Path, or have the previously mentioned _C++ Clang Compiler for Windows (9.0.0)_ downloaded. By default Visual Studio looks for Clang in two places ([source](https://docs.microsoft.com/en-us/cpp/build/clang-support-cmake)):
+        - (Windows) The internally installed copy of Clang/LLVM that comes with the Visual Studio installer.
+        - (Windows and Linux) The PATH environment variable.
+
+        If neither of these are present than the CMake configure step will fail. Afterwards you can still customize the location of the compiler with `CMAKE_CXX_COMPILER` once the default has been located.
+
+    ```bash
+    # configure with Ninja and clang compiler
+    cmake -S . -B build-rel/ -G Ninja^
+        -DCMAKE_BUILD_TYPE=Release^
+        -DCMAKE_CXX_COMPILER="C:/Program Files (x86)/LLVM/bin/clang-cl.exe"^
+
+    # build with Ninja
+    cmake --build build
+    ```
+- To verify which compiler is being used to build, pass `-v` (`--verbose`) to the `cmake --build <folder>` command.
+
+    ```bash
+    cmake --build build -v
+    ```
 
 ## include-what-you-use
 
-```bash
-python C:\Users\hultonha\Documents\iwyu\iwyu_tool.py -p . > iwyu.out
+With the LLVM and Clang libraries installed it's possible to build `include-what-you-use` to analyse C and C++ source files.
 
-python C:\Users\hultonha\Documents\iwyu\fix_includes.py < iwyu.out --blank_lines --nocomments --reorder
+Please see [examples/iwyu-build-scripts](examples/iwyu-build-scripts) for commands to build the library.
+
+Once `iwyu` is built, add the location of `include-what-you-use.exe` to your path and then invoke `iwyu_tool.py` in the directory of a `compile_commands.json` file of a project you've already built.
+
+```bash
+# analyse includes, write output to file
+python C:\path\to\iwyu\iwyu_tool.py -p . > iwyu.out
+
+# apply fixes
+python C:\path\to\iwyu\fix_includes.py < iwyu.out --blank_lines --nocomments --reorder
 # optional --dry_run
 ```
+
+Please find more information on `include-what-you-use` [here](https://github.com/include-what-you-use/include-what-you-use/blob/master/README.md).
