@@ -2,7 +2,7 @@
 
 REM Ninja Build
 cmake -S . -B build-rel/ -G Ninja^
-    -DCMAKE_CXX_COMPILER="C:/Program Files (x86)/LLVM/Release/bin/clang++.exe"^
+    -DCMAKE_CXX_COMPILER="C:/Program Files (x86)/LLVM/Release/bin/clang-cl.exe"^
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON^
     -DCMAKE_BUILD_TYPE=Release
 
