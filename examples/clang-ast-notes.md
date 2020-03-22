@@ -1,6 +1,6 @@
-# clang ast notes
+# Clang/LibTooling AST Notes
 
-[“clang-useful: Building useful tools with LLVM and clang for fun and profit"](https://youtu.be/E6i8jmiy8MY)
+[P. Goldsborough “clang-useful: Building useful tools with LLVM and clang for fun and profit"](https://youtu.be/E6i8jmiy8MY)
 
 ## Types
 
@@ -98,7 +98,7 @@
   - goldsborough.me & github.com/goldsborough
   - github.com/peter-can-talk/cppnow-2017
 
-## Clang Talk
+## Clang Refactoring Talk
 
 [Fred Tingaud “How to Refactor Millions of Line of Code Without Alienating your Colleagues”](https://youtu.be/JPnN2c2odNY)
 
@@ -106,3 +106,32 @@
 - Clang Tidy Matcher
   - registerMatchers(MatchFiner* finder) { finder->addMatcher(MY_MATCHER...); }
   - virtual void check(const MatchFinder::MatchResult& result)
+
+## Clang Tidy Check Talk
+
+[CPPP 2019 - Adding a New clang-tidy Check by the Practice - Jérémy Demeule](https://youtu.be/K-WhaEUEZWc)
+
+- clang-query
+  - (commands)
+  - `set output diag`
+  - `enable output detailed-ast`
+  - `match translationUnitDecl`
+  - `match functionDecl`
+  - `match varDecl`
+  - `match functionDecl (hasName("hello"))`
+  - (introduce alias)
+    - `let <name> hasAncestor(functionDecl(hasName("<name>")))`
+    - `match callExpr(callee(functionDecl(hasName("<name>"))))`
+
+- clang-tools-extra/clang-tidy
+  - `./add_new_check.py <category> <name>`
+
+- (in code - clang-tidy check)
+  - `::registerMatchers`
+
+- `(::check)`
+  - `const auto* matcherExpr = Result.Node.getNodeAss<CallExpr>("name");`
+  - `diag(MatchExpr->getExprLoc(), "message");`
+
+- use .bind to give matcher a name
+- run-clang-tidy.py -clang-tidy-binary <path/to/exe> -checks ...
