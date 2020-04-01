@@ -51,10 +51,17 @@ It is possible to use the Ninja build system on Windows (even when using the MSV
 
 ### Ninja Prerequisites
 
-- If you wish to use your normal terminal (e.g. cmd.exe or cmder) Ninja must be added to your path (e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`).
-  - To use the Ninja generator from your normal terminal with MSVC you must run `vcvars64.bat`, located here: `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"` (the exact location may differ depending on which version of Visual Studio you have installed (year/edition etc.)).
-    - This is so CMake knows the location of the compiler (`cl.exe`).
+- If you wish to use your normal terminal (e.g. cmd.exe, cmder, Windows Terminal etc.) Ninja must be added to your path.
+    - Potential locations include:
+      - `C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`
+      - `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\Ninja\ninja.exe`
+- To use the Ninja generator from your normal terminal with MSVC you must also run `vcvars64.bat`. This is so CMake knows the location of the compiler (`cl.exe`).
+    - Potential locations include:
+      - `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Auxiliary\Build\vcvars64.bat"`
+      - `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"`
 - It is also possible to simply launch the Developer Command Prompt for Visual Studio to have these options added automatically to the environment.
+
+> The exact location of `ninja.exe` and `vcvars64.bat` may differ depending on which version of Visual Studio you have installed (year/edition etc.)).
 
 ## Projects
 
