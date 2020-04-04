@@ -31,10 +31,10 @@ DeclarationMatcher declMatcher = functionDecl(
 
 class VecCallback : public clang::ast_matchers::MatchFinder::MatchCallback {
 public:
-    virtual void run(
+    void run(
         const clang::ast_matchers::MatchFinder::MatchResult& result) final {
         llvm::outs() << ".";
-        if (const auto func =
+        if (const auto* const func =
                 result.Nodes.getNodeAs<clang::FunctionDecl>(FunctionId)) {
             const auto& sm = *result.SourceManager;
             const auto& loc = func->getLocation();
