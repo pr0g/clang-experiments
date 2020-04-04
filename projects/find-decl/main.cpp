@@ -1,6 +1,11 @@
+#include <memory>
+
 #include "DeclFindingAction.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
+#include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/CommandLine.h"
 
 // reference
 // https://xinhuang.github.io/posts/2014-10-19-clang-tutorial-finding-declarations.html
