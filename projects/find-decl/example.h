@@ -1,9 +1,10 @@
 #pragma once
 
 class MyClass {
-  int foo;
+    int foo;
+
 public:
-  void bar() {}
+    void bar() {}
 };
 
 MyClass foobar();

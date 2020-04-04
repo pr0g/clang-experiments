@@ -4,18 +4,20 @@
 #include "clang/Basic/SourceManager.h"
 #include "llvm/Support/raw_ostream.h"
 
-#include <string>
 #include <sstream>
+#include <string>
 
 class DeclVisitor : public clang::RecursiveASTVisitor<DeclVisitor> {
     clang::SourceManager& sourceManager_;
+
 public:
     DeclVisitor(clang::SourceManager& sourceManager)
         : sourceManager_(sourceManager) {}
 
     bool VisitNamedDecl(clang::NamedDecl* namedDecl) {
-        llvm::outs() << "Found " << namedDecl->getQualifiedNameAsString() << " at "
-            << getDeclLocation(namedDecl->getBeginLoc()) << "\n";
+        llvm::outs() << "Found " << namedDecl->getQualifiedNameAsString()
+                     << " at " << getDeclLocation(namedDecl->getBeginLoc())
+                     << "\n";
 
         return true;
     }

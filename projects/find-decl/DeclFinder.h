@@ -9,6 +9,7 @@
 class DeclFinder : public clang::ASTConsumer {
     DeclVisitor visitor_;
     const clang::SourceManager& sm_;
+
 public:
     DeclFinder(clang::SourceManager& sm) : visitor_(sm), sm_(sm) {}
 

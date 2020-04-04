@@ -23,5 +23,6 @@ int main(int argc, const char** argv) {
     auto files = option.getSourcePathList();
     clang::tooling::ClangTool tool(option.getCompilations(), files);
 
-    return tool.run(clang::tooling::newFrontendActionFactory<DeclFindingAction>().get());
+    return tool.run(
+        clang::tooling::newFrontendActionFactory<DeclFindingAction>().get());
 }

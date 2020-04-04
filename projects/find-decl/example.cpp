@@ -3,6 +3,6 @@
 #include <vector>
 
 MyClass foobar() {
-  MyClass a;
-  return a;
+    MyClass a;
+    return a;
 }
