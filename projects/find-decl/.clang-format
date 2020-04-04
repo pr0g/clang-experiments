@@ -1,3 +1,9 @@
 ---
-BasedOnStyle: Google
+IndentWidth: 4
+TabWidth: 4
+AccessModifierOffset: -4
+PointerAlignment: Left
+AlignAfterOpenBracket: AlwaysBreak
+AlwaysBreakAfterReturnType: None
+PenaltyReturnTypeOnItsOwnLine: 1000
 ...
